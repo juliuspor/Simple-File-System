@@ -2,14 +2,22 @@
 
 This project is a basic file system implementation from scratch.
 
-## Features
+## File System Structure
 
-- **Super Block**: Manages metadata about the file system.
-- **Global Variables**: Stores shared data used across the file system.
-- **String Copy**: Implements utility functions for string manipulation.
-- **Mount the Filesystem**: Handles the initialization and mounting of the file system.
-- **Allocate File**: Manages file allocation within the system.
-- **Setting the File Size**: Adjusts and tracks file sizes.
+The file system is organized as follows:
+
+- **Superblock**:
+  - Write: Handles writing metadata to the superblock.
+  - Read: Handles reading metadata from the superblock.
+- **Inode**:
+  - Write: Manages writing inode information.
+  - Read: Manages reading inode information.
+- **Block**:
+  - Write: Handles writing data blocks.
+  - Read: Handles reading data blocks.
+- **File**:
+  - Write: Manages writing file data.
+  - Read: Manages reading file data.
 
 ## Getting Started
 
