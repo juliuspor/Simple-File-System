@@ -1,6 +1,7 @@
 #include "fs.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 /*
 struct superblock
 {
@@ -36,7 +37,7 @@ void create_fs (){
     inodes = malloc(sizeof(struct inode) * sb.num_inodes);
     for (int i = 0; i < sb.num_inodes; i++){
         inodes[i].size = -1; // -1 means the inode is free
-        inodes[i].name[0] = ""; // empty name
+        strcpy(inodes[i].name, ""); // empty name
     }
 
     dbs = malloc(sizeof(struct disk_block) * sb.num_blocks);
@@ -50,5 +51,21 @@ void mount_fs ();
 
 // write the filesystem
 void sync_fs (){
+    FILE *file; 
+    file = fopen("fs_data", "w+");
 
+    // write the superblock
+    fwrite (&sb, sizeof(struct superblock), 1, file);
+
+    // write the inodes
+    for (int i = 0; i < sb.num_inodes; i++){
+        fwrite (&inodes[i], sizeof(struct inode), 1, file);
+    }
+    
+    // write the disk blocks
+    for (int i = 0; i < sb.num_blocks; i++){
+        fwrite (&dbs[i], sizeof(struct disk_block), 1, file);
+    }
+
+    fclose(file); 
 }
