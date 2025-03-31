@@ -34,18 +34,13 @@ void mount_fs (){
     // write the superblock
     fread (&sb, sizeof(struct superblock), 1, file);
 
-    // write the inodes
-    for (int i = 0; i < sb.num_inodes; i++){
-        fread (&inodes[i], sizeof(struct inode), 1, file);
-    }
-    
-    // write the disk blocks
-    for (int i = 0; i < sb.num_blocks; i++){
-        fread (&dbs[i], sizeof(struct disk_block), 1, file);
-    }
+    inodes = malloc(sizeof(struct inode) * sb.num_inodes);
+    dbs = malloc(sizeof(struct disk_block) * sb.num_blocks);
+
+    fread( inodes, sizeof(struct inode), sb.num_inodes, file);
+    fread( dbs, sizeof(struct disk_block), sb.num_blocks, file);
 
     fclose(file); 
-
 }
 
 // write the filesystem
@@ -56,15 +51,9 @@ void sync_fs (){
     // write the superblock
     fwrite (&sb, sizeof(struct superblock), 1, file);
 
-    // write the inodes
-    for (int i = 0; i < sb.num_inodes; i++){
-        fwrite (&inodes[i], sizeof(struct inode), 1, file);
-    }
-    
-    // write the disk blocks
-    for (int i = 0; i < sb.num_blocks; i++){
-        fwrite (&dbs[i], sizeof(struct disk_block), 1, file);
-    }
+    // write the inodes and dbs
+    fwrite( inodes, sizeof(struct inode), sb.num_inodes, file);
+    fwrite( dbs, sizeof(struct disk_block), sb.num_blocks, file);
 
     fclose(file); 
 }
