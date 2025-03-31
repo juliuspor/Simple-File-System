@@ -33,6 +33,18 @@ void shorten_file(int bn){
     dbs[bn].next_block_num = -1; // free the block
 }
 
+
+int get_block_num(int file, int offset){
+    int togo = offset;
+    int bn = inodes[file].first_block;
+
+    while (togo > 0){
+        bn = dbs[bn].next_block_num;
+        togo--;
+    }
+    return bn;
+}
+
 // create a new filesystem
 void create_fs (){
     sb.num_inodes = 10;
@@ -120,13 +132,18 @@ void set_filesize(int filenum, int size){
 } 
 
 void write_byte (int filenum, int pos, char *data){
+    // calculate which block to write 
+    int relative_block = pos / BLOCKSIZE;
 
+    // find the block number 
+    int bn = get_block_num(filenum, relative_block);
+
+    // find the offset in the block
+    int offset = pos % BLOCKSIZE;
+
+    // write the data to the block
+    dbs[bn].data[offset] = *data;
 } 
-
-
-
-
-
 
 void print_fs(){
     printf("Superblock info:\n");
