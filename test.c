@@ -4,13 +4,14 @@
 
 void main(){
     mount_fs();
+    int file = allocate_file("other");
 
-    set_filesize(0, 5000);
+    set_filesize(file, 5000);
 
-    char data = 'a';
+    char data = 'b';
 
     for (int i = 0; i < 49; i++){
-        write_byte(0, i*100, &data);
+        write_byte(file, i*100, &data);
     }
     sync_fs();
     print_fs();
