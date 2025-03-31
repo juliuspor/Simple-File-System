@@ -2,6 +2,9 @@
 // number of inodes
 // number of disk blocks
 // size of the disk blocks
+
+#define BLOCKSIZE 512
+
 struct superblock
 {
     int num_inodes; // number of inodes
@@ -20,7 +23,7 @@ struct inode
 struct disk_block
 {
     int next_block_num; // number of the next block
-    char data[512]; // data of the block
+    char data[BLOCKSIZE]; // data of the block
 };
 
 void create_fs (); // create a new filesystem
@@ -29,6 +32,7 @@ void sync_fs ();   // write the filesystem
 
 
 int allocate_file(char name[8]); // allocate a file and return filenumber
-
+void set_filesize(int filenum, int size); // set the size of a file
+void write_byte (int filenum, int pos, char *data); // write data to a file
 
 void print_fs (); // print info about the filesystem

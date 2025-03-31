@@ -25,6 +25,14 @@ int find_empty_block(){
     return -1; 
 }
 
+void shorten_file(int bn){
+    int nn = dbs[bn].next_block_num;
+    if (dbs[bn].next_block_num >= 0){
+        shorten_file(nn);
+    }
+    dbs[bn].next_block_num = -1; // free the block
+}
+
 // create a new filesystem
 void create_fs (){
     sb.num_inodes = 10;
@@ -87,6 +95,38 @@ int allocate_file(char name[8]){
 
     return inode; 
 }
+
+void set_filesize(int filenum, int size){
+    int tmp = size + BLOCKSIZE - 1; 
+    int num = tmp / BLOCKSIZE; 
+
+    int bn = inodes[filenum].first_block; 
+    bn--; 
+    // grow the file if necessary 
+    while (num > 0){
+        int next_num = dbs[bn].next_block_num;
+        if (next_num == -2){
+            int empty = find_empty_block();
+            dbs[bn].next_block_num = empty;
+            dbs[empty].next_block_num = -2;
+        }
+        bn = dbs[bn].next_block_num;
+        num--; 
+    }
+
+    // shorten if necessary 
+    shorten_file(bn);
+    dbs[bn].next_block_num = -2; // free the block
+} 
+
+void write_byte (int filenum, int pos, char *data){
+
+} 
+
+
+
+
+
 
 void print_fs(){
     printf("Superblock info:\n");
