@@ -13,6 +13,7 @@ struct superblock
 struct inode
 {
     int size; // size of the file
+    int first_block; // number of the first block
     char name[8]; // name of the file
 };
 
@@ -25,3 +26,5 @@ struct disk_block
 void create_fs (); // create a new filesystem
 void mount_fs ();  // load a filesystem
 void sync_fs ();   // write the filesystem
+
+void print_fs (); // print info about the filesystem
