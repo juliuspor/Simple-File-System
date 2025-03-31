@@ -7,6 +7,24 @@ struct superblock sb;
 struct inode *inodes;
 struct disk_block *dbs;
 
+int find_empty_inode(){
+    for (int i = 0; i < sb.num_inodes; i++){
+        if (inodes[i].first_block == -1){
+            return i;
+        }
+    }
+    return -1; 
+}
+
+int find_empty_block(){
+    for (int i = 0; i < sb.num_blocks; i++){
+        if (dbs[i].next_block_num == -1){
+            return i;
+        }
+    }
+    return -1; 
+}
+
 // create a new filesystem
 void create_fs (){
     sb.num_inodes = 10;
@@ -56,6 +74,18 @@ void sync_fs (){
     fwrite( dbs, sizeof(struct disk_block), sb.num_blocks, file);
 
     fclose(file); 
+}
+
+int allocate_file(char name[8]){
+    int inode = find_empty_inode();
+    int block = find_empty_block();
+
+    inodes[inode].first_block = block; 
+    dbs[block].next_block_num = -2; 
+
+    strcpy(inodes[inode].name, name);
+
+    return inode; 
 }
 
 void print_fs(){
